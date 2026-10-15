@@ -2,23 +2,51 @@ package Svider.Zadanie2.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import Svider.Zadanie2.dao.EmployeeDAO;
+import org.springframework.transaction.annotation.Transactional;
 import Svider.Zadanie2.entity.Employee;
+import Svider.Zadanie2.repository.EmployeeRepository;
 
 import java.util.List;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
-    private final EmployeeDAO employeeDAO;
+    private final EmployeeRepository employeeRepository;
 
     @Autowired
-    public EmployeeServiceImpl(EmployeeDAO employeeDAO) {
-        this.employeeDAO = employeeDAO;
+    public EmployeeServiceImpl(EmployeeRepository employeeRepository) {
+        this.employeeRepository = employeeRepository;
     }
 
     @Override
     public List<Employee> findAll() {
-        return employeeDAO.findAll();
+        return employeeRepository.findAll();
+    }
+
+    @Override
+    public Employee findById(int id) {
+        return employeeRepository.findById(id).orElse(null);
+    }
+
+    @Transactional
+    @Override
+    public Employee save(Employee employee) {
+        return employeeRepository.save(employee);
+    }
+
+    @Transactional
+    @Override
+    public void deleteById(int id) {
+        employeeRepository.deleteById(id);
+    }
+
+    @Override
+    public List<Employee> findByFirstNameAndLastName(String firstName, String lastName) {
+        return employeeRepository.findByFirstNameAndLastName(firstName, lastName);
+    }
+
+    @Override
+    public List<Employee> getSortedEmployees() {
+        return employeeRepository.findAllByOrderByLastNameAsc();
     }
 }
